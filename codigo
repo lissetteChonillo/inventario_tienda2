@@ -1,0 +1,43 @@
+import tkinter as tk
+
+def añadir_tarea(event=None):
+    tarea = entrada.get().strip()
+    if tarea:
+        lista.insert(tk.END, tarea)
+        entrada.delete(0, tk.END)
+
+def marcar_completada():
+    try:
+        i = lista.curselection()[0]
+        tarea = lista.get(i)
+        if not tarea.startswith("[✓] "):
+            lista.delete(i)
+            lista.insert(i, f"[✓] {tarea}")
+    except IndexError:
+        pass
+
+def eliminar_tarea():
+    try:
+        lista.delete(lista.curselection()[0])
+    except IndexError:
+        pass
+
+ventana = tk.Tk()
+ventana.title("Lista de Tareas")
+
+entrada = tk.Entry(ventana, width=30)
+entrada.pack(pady=5)
+entrada.bind("<Return>", añadir_tarea)
+
+frame = tk.Frame(ventana)
+frame.pack(pady=5)
+
+tk.Button(frame, text="Añadir", command=añadir_tarea).grid(row=0, column=0, padx=5)
+tk.Button(frame, text="Completada", command=marcar_completada).grid(row=0, column=1, padx=5)
+tk.Button(frame, text="Eliminar", command=eliminar_tarea).grid(row=0, column=2, padx=5)
+
+lista = tk.Listbox(ventana, width=50, height=15)
+lista.pack(pady=5)
+lista.bind("<Double-1>", lambda e: marcar_completada())
+
+ventana.mainloop()
